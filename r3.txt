@@ -1,0 +1,54 @@
+#include<stdio.h>
+struct detailsOfProcess
+{
+    int processID; 
+    int arrivalTime,burstTime,waiturnT,turnT,priority,newbt;
+    
+}q1[20],q2[20],swapVariable;
+
+int timeT=0,timeQuantumFixedPriority,timeQuantumRoundRobin,bu_t=0,largest,totalProcesses,c=0,q2pf=0,totalProcesses2,position,f=0,n;
+double wait_timeT=0,turnaround_timeT= 0,average_waiting_timeT,average_turnaround_timeT;
+
+void enterDetails(){
+	printf("Enter number of processes  : \n");
+    scanf("%d",&totalProcesses);
+    n=totalProcesses;
+    for(int i=0;i<totalProcesses;i++)
+    {
+    	printf("Enter process id : \n");
+        scanf("%d",&q1[i].processID);
+        printf("Enter burst time of the process: \n ");
+        scanf("%d",&q1[i].burstTime);
+        q1[i].newbt=q1[i].burstTime;
+        printf("Enter arrival time of the process \n");
+        scanf("%d",&q1[i].arrivalTime);		
+        printf("Enter priority  of the process \n ");
+        scanf("%d",&q1[i].priority);
+    }
+}
+
+void displayDetails(){
+		 printf(" \n You entered the following details  :  \n\n ");
+    printf("Process id || \t");
+    printf("burst time || \t");
+	printf("Arrival time || ");
+	printf("Priority  of the process \n \n");
+	for(int i=0;i<totalProcesses;i++)
+    {
+    	printf("%d \t \t",q1[i].processID);
+        printf("%d \t \t",q1[i].burstTime);
+        printf("%d \t \t",q1[i].arrivalTime);		
+        printf("%d \t \t \t \t",q1[i].priority);
+	    printf(" \n \n");    
+	}    
+
+    
+}
+
+
+
+
+main(){
+enterDetails();
+displayDetails();
+}
