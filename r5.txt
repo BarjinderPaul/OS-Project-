@@ -1,0 +1,157 @@
+#include<stdio.h>
+struct detailsOfProcess
+{
+    int processID; 
+    int arrivalTime,burstTime,waiturnT,turnT,priority,newbt;
+    
+}q1[20],q2[20],swapVariable;
+
+int timeT=0,timeQuantumFixedPriority,timeQuantumRoundRobin,bu_t=0,largest,totalProcesses,c=0,q2pf=0,totalProcesses2,position,f=0,n;
+double wait_timeT=0,turnaround_timeT= 0,average_waiting_timeT,average_turnaround_timeT;
+
+void enterDetails(){
+	printf("Enter number of processes  : \n");
+    scanf("%d",&totalProcesses);
+    n=totalProcesses;
+    for(int i=0;i<totalProcesses;i++)
+    {
+    	printf("Enter process id : \n");
+        scanf("%d",&q1[i].processID);
+        printf("Enter burst time of the process: \n ");
+        scanf("%d",&q1[i].burstTime);
+        q1[i].newbt=q1[i].burstTime;
+        printf("Enter arrival time of the process \n");
+        scanf("%d",&q1[i].arrivalTime);		
+        printf("Enter priority  of the process \n ");
+        scanf("%d",&q1[i].priority);
+    }
+}
+
+void displayDetails(){
+		 printf(" \n You entered the following details  :  \n\n ");
+    printf("Process id || \t");
+    printf("burst time || \t");
+	printf("Arrival time || ");
+	printf("Priority  of the process \n \n");
+	for(int i=0;i<totalProcesses;i++)
+    {
+    	printf("%d \t \t",q1[i].processID);
+        printf("%d \t \t",q1[i].burstTime);
+        printf("%d \t \t",q1[i].arrivalTime);		
+        printf("%d \t \t \t \t",q1[i].priority);
+	    printf(" \n \n");    
+	}    
+    
+}
+void timeQuantumDetails(){
+	printf("Enter the time quantum for queue at level 1 i.e., round robin \n");
+    scanf("%d",&timeQuantumRoundRobin);
+	printf("Enter the time quantum for queue at level 0 i.e., fixed priority \n");
+    scanf("%d",&timeQuantumFixedPriority);
+}
+main()
+{
+
+    enterDetails();  
+	displayDetails();
+	timeQuantumDetails();
+    printf("Process \t || Turnaround Time \t  \t || Waiting Time\n");
+    for(int i=0;i<totalProcesses;i++)
+    {
+        position=i;
+        for(int j=i+1;j<totalProcesses;j++)
+        {
+            if(q1[j].arrivalTime<q1[position].arrivalTime)
+                position=j;
+        }
+        swapVariable=q1[i];
+        q1[i]=q1[position];
+        q1[position]=swapVariable;
+    }
+    timeT=q1[0].arrivalTime;
+    for(int i=0;totalProcesses!=0;i++)
+    {
+    	while(c!=timeQuantumFixedPriority)
+    	{
+    		c++;
+    		if(q1[i].arrivalTime<=timeT)
+    		{
+    		for(int j=i+1;j<totalProcesses;j++)
+    		{
+   			if(q1[j].arrivalTime==timeT&&q1[j].priority<q1[i].priority)
+    		{
+   				q2[q2pf]=q1[i];
+				q2pf++;
+    				for(int k=i;k<totalProcesses-1;k++)
+    					q1[k]=q1[k+1];
+    					totalProcesses--;
+						c=0;
+    					i=j-1;
+    					j--;
+			}
+			}
+			}
+			timeT++;
+			q1[i].burstTime--;
+			if(q1[i].burstTime==0)
+			{
+				q1[i].turnT=timeT-q1[i].arrivalTime;
+				q1[i].waiturnT=q1[i].turnT-q1[i].newbt;
+				printf("%d \t \t || \t %d \t  \t \t ||\t %d \n",q1[i].processID,q1[i].turnT,q1[i].waiturnT);
+				wait_timeT+=timeT-q1[i].arrivalTime-q1[i].newbt; 
+    			turnaround_timeT+=timeT-q1[i].arrivalTime;
+    			for(int k=i;k<totalProcesses-1;k++)
+    				q1[k]=q1[k+1];i--;
+    			totalProcesses--;
+				c=timeQuantumFixedPriority;
+				break;
+			}
+		}
+		c=0;
+		if(q1[i].burstTime!=0)
+		{
+			q2[q2pf]=q1[i];
+			q2pf++;
+			for(int k=i;k<totalProcesses-1;k++)
+    			q1[k]=q1[k+1];
+    		totalProcesses--;
+		}
+			if(i==totalProcesses-1)
+				i=-1;
+	}
+	
+	totalProcesses2=q2pf;
+	for(c=0;totalProcesses2!=0;) 
+	{ 
+		if(q2[c].burstTime<=timeQuantumRoundRobin&&q2[c].burstTime>0) 
+    	{ 
+    		timeT+=q2[c].burstTime; 
+    		q2[c].burstTime=0; 
+    		f=1; 
+    	} 
+    	else if(q2[c].burstTime>0) 
+    	{ 
+    		q2[c].burstTime-=timeQuantumRoundRobin; 
+    		timeT+=timeQuantumRoundRobin; 
+    	} 
+    	if(q2[c].burstTime==0&&f==1) 
+    	{ 
+    		totalProcesses2--; 
+    		q2[c].turnT=timeT-q2[c].arrivalTime;
+			q2[c].waiturnT=q2[c].turnT-q2[c].newbt; 
+			printf("%d \t \t ||  \t %d 	 \t \t \t ||  \t %d \n",q2[c].processID,q2[c].turnT,q2[c].waiturnT); 
+    		turnaround_timeT+=timeT-q2[c].arrivalTime; 
+    		wait_timeT+=timeT-q2[c].arrivalTime-q2[c].newbt;
+    		for(int k=c;k<totalProcesses2;k++)
+    			q2[k]=q2[k+1];c--;
+    		f=0; 
+    	} 
+
+    	if(c==totalProcesses2-1) 
+      		c=0; 
+    	else 
+    		c++; 
+    }
+    printf("Avg waiting time= %f \n",wait_timeT*1.0/n); 
+    printf("Avg turnaround time = %f",turnaround_timeT*1.0/n);   
+}
